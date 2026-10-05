@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>入口歡迎動畫 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f5f8fc;
+    --text: #34445d;
+    --text-2: #53647b;
+    --accent: #47648a;
+    --accent-dark: #344e72;
+    --outline: #8fa8c8;
+    --brand: #5d708b;
+    --display: "Cormorant Garamond", "Noto Serif TC", Georgia, serif;
+    --serif: "Noto Serif TC", "Songti TC", serif;
+    --sans: "Noto Sans TC", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(155deg, #f5f8fc, #edf3fa 55%, #f9fbfd);
+    color: var(--text);
+    font-family: var(--sans);
+    padding: 32px 16px 48px;
+  }
+  h1.page-title {
+    margin: 0 0 6px;
+    text-align: center;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 1.5rem;
+  }
+  .page-sub {
+    margin: 0 0 32px;
+    text-align: center;
+    color: var(--text-2);
+    font-size: 0.9rem;
+  }
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 36px;
+    justify-content: center;
+  }
+  .variant { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .variant h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+  .variant p.note { margin: 0; max-width: 340px; color: var(--text-2); font-size: 0.85rem; text-align: center; line-height: 1.6; }
+  .replay {
+    min-height: 36px; padding: 0 16px; border: 1px solid var(--outline); border-radius: 999px;
+    background: #fff; color: var(--accent-dark); font: 500 0.85rem var(--sans); cursor: pointer;
+  }
+
+  /* ---------- phone mock ---------- */
+  .phone {
+    width: 340px;
+    height: 700px;
+    border-radius: 38px;
+    padding: 10px;
+    background: #dfe7f1;
+    box-shadow: 0 20px 60px rgba(69, 90, 120, 0.18);
+  }
+  .screen {
+    position: relative;
+    height: 100%;
+    border-radius: 30px;
+    overflow: hidden;
+    background: linear-gradient(155deg, #f5f8fc, #edf3fa 55%, #f9fbfd);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 28px 56px;
+    text-align: center;
+  }
+
+  /* shared content */
+  .brand-name {
+    font-family: var(--display);
+    font-size: 2.7rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    padding-left: 0.18em;
+    color: var(--brand);
+  }
+  .brand-sub {
+    margin-top: 6px;
+    font-family: var(--serif);
+    font-size: 0.78rem;
+    letter-spacing: 0.48em;
+    padding-left: 0.48em;
+    color: var(--brand);
+  }
+  .slogan {
+    margin: 22px 0 0;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    letter-spacing: 0.08em;
+    color: var(--text);
+  }
+  .login {
+    margin-top: 40px;
+    display: inline-flex; align-items: center; gap: 10px;
+    min-height: 50px; padding: 0 26px;
+    border: 0; border-radius: 999px;
+    background: var(--accent-dark); color: #fff;
+    font: 600 1rem var(--sans); letter-spacing: 0.04em;
+    box-shadow: 0 10px 28px rgba(52, 78, 114, 0.22);
+    cursor: pointer;
+  }
+  .login svg { width: 20px; height: 20px; fill: currentColor; }
+
+  /* ---------- A: ripple ---------- */
+  .ripple-field {
+    position: relative;
+    width: 200px; height: 200px;
+    margin-bottom: 36px;
+    display: grid; place-items: center;
+  }
+  .ripple-field .core {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: radial-gradient(circle, #fff 0 30%, var(--outline) 100%);
+    box-shadow: 0 0 18px 6px rgba(143, 168, 200, 0.35);
+    animation: core-breathe 4.8s ease-in-out infinite;
+  }
+  .ripple-field .ring {
+    position: absolute; inset: 0; margin: auto;
+    width: 200px; height: 200px; border-radius: 50%;
+    border: 1px solid rgba(113, 145, 183, 0.55);
+    background: radial-gradient(circle, transparent 60%, rgba(147, 177, 211, 0.12));
+    opacity: 0;
+    transform: scale(0.08);
+    animation: ripple 4.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  }
+  .ripple-field .ring:nth-child(2) { animation-delay: 1.2s; }
+  .ripple-field .ring:nth-child(3) { animation-delay: 2.4s; }
+  .ripple-field .ring:nth-child(4) { animation-delay: 3.6s; }
+  @keyframes ripple {
+    0% { opacity: 0; transform: scale(0.08); }
+    15% { opacity: 0.9; }
+    100% { opacity: 0; transform: scale(1.25); }
+  }
+  @keyframes core-breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+  }
+
+  /* ---------- B / D: per-character reveal ---------- */
+  .chars span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+    animation: char-in 0.9s ease-out forwards;
+    animation-delay: calc(var(--i) * 90ms + var(--base, 0ms));
+  }
+  @keyframes char-in {
+    to { opacity: 1; transform: none; filter: blur(0); }
+  }
+  .fade-late {
+    opacity: 0;
+    animation: fade-up 0.9s ease-out forwards;
+    animation-delay: var(--delay, 2.4s);
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ---------- C: window light ---------- */
+  .window .light {
+    position: absolute; inset: -6%;
+    background: url("../../public/images/window-light.webp") center 40% / cover no-repeat;
+    opacity: 0.55;
+    animation: light-breathe 9s ease-in-out infinite;
+  }
+  .window .veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(245, 248, 252, 0.15), rgba(245, 248, 252, 0.7) 70%);
+  }
+  .window .content { position: relative; display: flex; flex-direction: column; align-items: center; }
+  @keyframes light-breathe {
+    0%, 100% { opacity: 0.4; transform: scale(1) translateX(0); }
+    50% { opacity: 0.75; transform: scale(1.04) translateX(-1.5%); }
+  }
+
+  /* ---------- D: ripple then title ---------- */
+  .combo .ripple-field .ring { animation-iteration-count: infinite; }
+  .combo .ripple-field { animation: settle 1.4s ease-out 1.6s both; }
+  @keyframes settle {
+    from { transform: translateY(40px); }
+    to { transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; animation-delay: 0ms !important; }
+    .ripple-field .ring { opacity: 0.4; transform: scale(0.7); }
+  }
+</style>
+</head>
+<body>
+  <h1 class="page-title">入口頁歡迎動畫：四種方向</h1>
+  <p class="page-sub">每個畫面都只放品牌、標語和「用 GitHub 登入」。按「重播」可以重新看一次。</p>
+
+  <div class="grid">
+    <!-- A -->
+    <section class="variant">
+      <h2>A｜聲波漣漪擴散</h2>
+      <div class="phone"><div class="screen" id="a">
+        <div class="ripple-field" aria-hidden="true">
+          <span class="ring"></span><span class="ring"></span><span class="ring"></span><span class="ring"></span>
+          <span class="core"></span>
+        </div>
+        <div class="brand-name">Aftertone</div>
+        <div class="brand-sub">殘響日誌</div>
+        <p class="slogan">把今天的殘響，<br />輕輕留在這裡。</p>
+        <button class="login" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>用 GitHub 登入</button>
+      </div></div>
+      <p class="note">中央一點，漣漪一圈圈往外擴散後淡出，持續循環。最貼近「耳鳴／殘響」的主題，也跟回望頁的耳朵漣漪同一套語言。</p>
+      <button class="replay" data-target="a">重播</button>
+    </section>
+
+    <!-- B -->
+    <section class="variant">
+      <h2>B｜標題逐字浮現</h2>
+      <div class="phone"><div class="screen" id="b">
+        <div class="brand-name chars" data-text="Aftertone"></div>
+        <div class="brand-sub chars" data-text="殘響日誌" style="--base: 900ms"></div>
+        <p class="slogan"><span class="chars" data-text="把今天的殘響，" style="--base: 1400ms"></span><br /><span class="chars" data-text="輕輕留在這裡。" style="--base: 2000ms"></span></p>
+        <button class="login fade-late" type="button" style="--delay: 3s"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>用 GitHub 登入</button>
+      </div></div>
+      <p class="note">品牌名與標語一個字一個字從模糊中浮現，播完一次就停住，最後登入按鈕出現。畫面最乾淨，像翻開日記的第一頁。</p>
+      <button class="replay" data-target="b">重播</button>
+    </section>
+
+    <!-- C -->
+    <section class="variant">
+      <h2>C｜窗光呼吸</h2>
+      <div class="phone"><div class="screen window" id="c">
+        <div class="light" aria-hidden="true"></div>
+        <div class="veil" aria-hidden="true"></div>
+        <div class="content">
+          <div class="brand-name">Aftertone</div>
+          <div class="brand-sub">殘響日誌</div>
+          <p class="slogan">把今天的殘響，<br />輕輕留在這裡。</p>
+          <button class="login" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>用 GitHub 登入</button>
+        </div>
+      </div></div>
+      <p class="note">沿用首頁的窗光照片，光影緩慢明暗、微微飄移，像清晨坐在窗邊。最安靜，但因為用了首頁的背景，區隔感最弱。</p>
+      <button class="replay" data-target="c">重播</button>
+    </section>
+
+    <!-- D -->
+    <section class="variant">
+      <h2>D｜漣漪 + 標題組合</h2>
+      <div class="phone"><div class="screen combo" id="d">
+        <div class="ripple-field" aria-hidden="true">
+          <span class="ring"></span><span class="ring"></span><span class="ring"></span><span class="ring"></span>
+          <span class="core"></span>
+        </div>
+        <div class="brand-name chars" data-text="Aftertone" style="--base: 2200ms"></div>
+        <div class="brand-sub chars" data-text="殘響日誌" style="--base: 3100ms"></div>
+        <p class="slogan"><span class="chars" data-text="把今天的殘響，" style="--base: 3600ms"></span><br /><span class="chars" data-text="輕輕留在這裡。" style="--base: 4200ms"></span></p>
+        <button class="login fade-late" type="button" style="--delay: 5.2s"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>用 GitHub 登入</button>
+      </div></div>
+      <p class="note">先只有漣漪在畫面中央擴散，接著往上讓位，品牌與標語逐字浮現，最後才出現按鈕。最有儀式感，但約 6 秒後才能按登入。</p>
+      <button class="replay" data-target="d">重播</button>
+    </section>
+  </div>
+
+  <h1 class="page-title" style="margin-top: 56px">D + C：窗光背景上的漣漪與標題</h1>
+  <p class="page-sub">同一套動畫，兩種節奏。比較看看要等多久才出現登入按鈕比較舒服。</p>
+  <div class="grid">
+    <section class="variant">
+      <h2>E1｜原速（按鈕約 5 秒出現）</h2>
+      <div class="phone"><div class="screen window combo" id="e1">
+        <div class="light" aria-hidden="true"></div>
+        <div class="veil" aria-hidden="true"></div>
+        <div class="content">
+          <div class="ripple-field" aria-hidden="true">
+            <span class="ring"></span><span class="ring"></span><span class="ring"></span><span class="ring"></span>
+            <span class="core"></span>
+          </div>
+          <div class="brand-name chars" data-text="Aftertone" style="--base: 2200ms"></div>
+          <div class="brand-sub chars" data-text="殘響日誌" style="--base: 3100ms"></div>
+          <p class="slogan"><span class="chars" data-text="把今天的殘響，" style="--base: 3600ms"></span><br /><span class="chars" data-text="輕輕留在這裡。" style="--base: 4200ms"></span></p>
+          <button class="login fade-late" type="button" style="--delay: 5.2s"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>用 GitHub 登入</button>
+        </div>
+      </div></div>
+      <p class="note">漣漪先在窗光裡獨自擴散約 2 秒，再讓位給文字。儀式感完整，但每次打開都要等一下。</p>
+      <button class="replay" data-target="e1">重播</button>
+    </section>
+
+    <section class="variant">
+      <h2>E2｜快版（按鈕約 2.5 秒出現）</h2>
+      <div class="phone"><div class="screen window combo" id="e2">
+        <div class="light" aria-hidden="true"></div>
+        <div class="veil" aria-hidden="true"></div>
+        <div class="content">
+          <div class="ripple-field" aria-hidden="true" style="animation-delay: 0.5s; animation-duration: 1s">
+            <span class="ring"></span><span class="ring"></span><span class="ring"></span><span class="ring"></span>
+            <span class="core"></span>
+          </div>
+          <div class="brand-name chars" data-text="Aftertone" style="--base: 800ms"></div>
+          <div class="brand-sub chars" data-text="殘響日誌" style="--base: 1300ms"></div>
+          <p class="slogan"><span class="chars" data-text="把今天的殘響，" style="--base: 1500ms"></span><br /><span class="chars" data-text="輕輕留在這裡。" style="--base: 1800ms"></span></p>
+          <button class="login fade-late" type="button" style="--delay: 2.5s"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>用 GitHub 登入</button>
+        </div>
+      </div></div>
+      <p class="note">漣漪一出現就開始讓位，文字緊接著浮現。氣氛一樣，但不太需要等。</p>
+      <button class="replay" data-target="e2">重播</button>
+    </section>
+  </div>
+
+<script>
+  // Split data-text into per-character spans with a stagger index.
+  document.querySelectorAll(".chars").forEach((el) => {
+    [...el.dataset.text].forEach((ch, i) => {
+      const s = document.createElement("span");
+      s.textContent = ch;
+      s.style.setProperty("--i", i);
+      el.appendChild(s);
+    });
+  });
+  // Restart every animation inside one phone screen.
+  document.querySelectorAll(".replay").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const screen = document.getElementById(btn.dataset.target);
+      screen.getAnimations({ subtree: true }).forEach((a) => {
+        a.cancel();
+        a.play();
+      });
+    });
+  });
+</script>
+</body>
+</html>
