@@ -26,5 +26,3 @@ Vite 預設在 `http://localhost:5173`，將 `/api` 轉送到本機 Vercel 函�
 npm run build
 npm test
 ```
-
-`docs/license.json` 是既有未追蹤文件，不屬於應用程式配置；請勿將其當作登入或授權憑證。
