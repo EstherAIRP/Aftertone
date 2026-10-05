@@ -6,6 +6,7 @@ import HomeView from "./views/HomeView.vue";
 import RecordView from "./views/RecordView.vue";
 import DayView from "./views/DayView.vue";
 import GalleryView from "./views/GalleryView.vue";
+import InsightsView from "./views/InsightsView.vue";
 import "./style.css";
 
 const router = createRouter({
@@ -15,6 +16,7 @@ const router = createRouter({
     { path: "/record", component: RecordView },
     { path: "/day/:date", component: DayView, props: true },
     { path: "/gallery", component: GalleryView },
+    { path: "/insights", component: InsightsView },
   ],
 });
 

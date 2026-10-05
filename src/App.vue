@@ -62,6 +62,10 @@ onMounted(() => auth.check());
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="m6.5 17 4.7-5 3 2.5 3.3-4 2.5 3"/><circle cx="8.5" cy="8.5" r="1"/></svg>
           收藏
         </RouterLink>
+        <RouterLink to="/insights">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 7.5a6 6 0 0 1 0 9"/><path d="M12.5 5a9.5 9.5 0 0 1 0 14"/><circle cx="5.5" cy="12" r="1.3"/></svg>
+          回望
+        </RouterLink>
       </nav>
     </template>
   </div>
