@@ -8,6 +8,7 @@ import {
   getArchive,
   getArtworkImage,
   getDay,
+  getInsightsData,
   removeArtworkImage,
   setArtworkImage,
 } from "./db";
@@ -276,5 +277,24 @@ describe("schema migration", () => {
     });
     expect(await getArtworkImage("2026-09-01")).toBeNull();
     expect((await getArchive())[0].eventCount).toBe(1);
+  });
+});
+
+describe("getInsightsData", () => {
+  it("returns every event and artwork", async () => {
+    await addEvent(eventAt("2026-09-01T10:00"));
+    await completedDay("2026-09-02");
+    const data = await getInsightsData();
+    expect(data.events.map((event) => event.date).sort()).toEqual([
+      "2026-09-01",
+      "2026-09-02",
+    ]);
+    expect(data.artworks.map((artwork) => artwork.date)).toEqual([
+      "2026-09-02",
+    ]);
+  });
+
+  it("is empty for a new database", async () => {
+    expect(await getInsightsData()).toEqual({ events: [], artworks: [] });
   });
 });

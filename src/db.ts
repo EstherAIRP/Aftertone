@@ -163,6 +163,24 @@ export async function getArchive(): Promise<ArchiveDay[]> {
   }
 }
 
+// Everything the insights page summarises; image Blobs are not read.
+export async function getInsightsData(): Promise<{
+  events: TinnitusEvent[];
+  artworks: DailyArtwork[];
+}> {
+  const db = await openDatabase();
+  try {
+    const tx = db.transaction([EVENTS, ARTWORKS], "readonly");
+    const [events, artworks] = await Promise.all([
+      request<TinnitusEvent[]>(tx.objectStore(EVENTS).getAll()),
+      request<DailyArtwork[]>(tx.objectStore(ARTWORKS).getAll()),
+    ]);
+    return { events, artworks: artworks.map(normalizeArtwork) };
+  } finally {
+    db.close();
+  }
+}
+
 export async function getArtworkImage(
   date: string,
 ): Promise<ArtworkImage | null> {
