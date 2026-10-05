@@ -304,22 +304,6 @@ p {
 .secondary:hover {
   background: #e9f1fa;
 }
-.center-panel {
-  max-width: 540px;
-  margin: 3vh auto 0;
-  padding: 24px;
-  text-align: center;
-}
-.center-panel h1 {
-  margin-bottom: 18px;
-}
-.center-panel .button {
-  margin: 16px 0 22px;
-}
-.center-panel .footnote {
-  max-width: 430px;
-  margin: 8px auto;
-}
 
 .status-banner {
   padding: 8px 20px;
@@ -2089,23 +2073,197 @@ legend {
   font-family: var(--font-serif);
   font-size: var(--text-display);
 }
-.login-orbit {
-  width: 220px;
-  height: 220px;
-  margin: 0 auto 32px;
-  border: 1px solid rgba(113, 145, 183, 0.48);
-  border-radius: 50%;
+/* Welcome (entry): window light breathes; ripple settles, title rises
+   char by char, login last. Hidden states live only in `from` keyframes
+   so reduced motion (animation: none) shows the finished screen. */
+.app-shell--bare {
+  padding-bottom: 0;
+}
+.app-shell--bare::before {
+  display: none;
+}
+.welcome-pending {
+  min-height: 100dvh;
+}
+.welcome {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
   display: grid;
   place-items: center;
-  box-shadow:
-    0 0 0 22px rgba(255, 255, 255, 0.25),
-    0 0 0 46px rgba(147, 177, 211, 0.13),
-    inset 0 0 42px rgba(137, 169, 207, 0.2);
+  padding: 48px 24px calc(56px + env(safe-area-inset-bottom));
+  text-align: center;
 }
-.login-orbit span {
-  font-family: var(--font-serif);
-  font-size: var(--text-display);
+.welcome-light {
+  position: absolute;
+  inset: -6%;
+  background: url("/images/window-light.webp") center 40% / cover no-repeat;
+  opacity: 0.55;
+  animation: welcome-light 9s ease-in-out infinite;
+  pointer-events: none;
+}
+.welcome::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(245, 248, 252, 0.15),
+    rgba(245, 248, 252, 0.7) 70%
+  );
+  pointer-events: none;
+}
+.welcome-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.welcome-ripple {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 36px;
+  display: grid;
+  place-items: center;
+  animation: welcome-settle 1s ease-out 0.5s both;
+}
+.welcome-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(113, 145, 183, 0.55);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    transparent 60%,
+    rgba(147, 177, 211, 0.12)
+  );
+  opacity: 0.35;
+  transform: scale(0.3);
+  animation: welcome-ripple 4.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite both;
+}
+.welcome-ring:nth-child(2) {
+  transform: scale(0.55);
+  animation-delay: 1.2s;
+}
+.welcome-ring:nth-child(3) {
+  transform: scale(0.8);
+  animation-delay: 2.4s;
+}
+.welcome-ring:nth-child(4) {
+  transform: scale(1.05);
+  animation-delay: 3.6s;
+}
+.welcome-core {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 30%, var(--outline) 100%);
+  box-shadow: 0 0 18px 6px rgba(143, 168, 200, 0.35);
+  animation: welcome-core 4.8s ease-in-out infinite;
+}
+.welcome-brand {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #5d708b;
   font-weight: var(--weight-regular);
+}
+.welcome-brand-name {
+  padding-left: 0.18em;
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-wide);
+}
+.welcome-brand-sub {
+  margin-top: 6px;
+  padding-left: 0.48em;
+  font-family: var(--font-serif);
+  font-size: var(--text-xs);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-wider);
+}
+.welcome-slogan {
+  margin: 22px 0 0;
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: var(--text-md);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-loose);
+  letter-spacing: var(--tracking-heading);
+}
+.welcome-char {
+  display: inline-block;
+  animation: welcome-char 0.9s ease-out both;
+  animation-delay: calc(var(--i) * 90ms + var(--base, 0ms));
+}
+.welcome-login {
+  margin-top: 40px;
+  animation: welcome-fade 0.9s ease-out 2.5s both;
+}
+.welcome-login svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+.welcome-error {
+  max-width: 320px;
+  margin: 18px 0 0;
+  color: #842e36;
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+  animation: welcome-fade 0.9s ease-out 2.5s both;
+}
+@keyframes welcome-light {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: none;
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.04) translateX(-1.5%);
+  }
+}
+@keyframes welcome-settle {
+  from {
+    transform: translateY(40px);
+  }
+}
+@keyframes welcome-ripple {
+  0% {
+    opacity: 0;
+    transform: scale(0.08);
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+@keyframes welcome-core {
+  50% {
+    transform: scale(1.3);
+  }
+}
+@keyframes welcome-char {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+  }
+}
+@keyframes welcome-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
 }
 
 /* Insights (回望): soft light, no outlines; numbers stay quiet. */

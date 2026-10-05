@@ -1,51 +1,32 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { RouterLink, RouterView } from "vue-router";
+import { RouterLink, RouterView, useRouter } from "vue-router";
 import { useAuthStore } from "./auth";
+import WelcomeScreen from "./components/WelcomeScreen.vue";
 
 const auth = useAuthStore();
-const isDev = import.meta.env.DEV;
-onMounted(() => auth.check());
+const router = useRouter();
+// After the router's initial navigation, which rewrites the URL with the
+// original query; check() then strips auth_error for good.
+onMounted(async () => {
+  await router.isReady();
+  await auth.check();
+});
 </script>
 
 <template>
-  <div class="app-shell">
-    <header class="site-header">
-      <RouterLink class="brand" to="/" aria-label="Aftertone 首頁">
-        <span class="brand-name">Aftertone</span>
-        <small>殘響日誌</small>
-      </RouterLink>
-      <button
-        v-if="auth.authenticated"
-        class="text-button"
-        type="button"
-        @click="auth.logout()"
-      >
-        {{ auth.preview ? "離開預覽" : "登出" }}
-      </button>
-    </header>
-
-    <main v-if="!auth.ready" class="center-panel" aria-live="polite">
-      正在確認登入…
-    </main>
-    <main v-else-if="!auth.authenticated" class="center-panel">
-      <div class="login-orbit" aria-hidden="true"><span>＋</span></div>
-      <p class="eyebrow">PRIVATE JOURNAL</p>
-      <h1>把今天的殘響，<br />輕輕留在這裡。</h1>
-      <p class="muted">
-        這是一份只屬於你的耳鳴與意象日誌。
-      </p>
-      <p v-if="auth.error" class="error" role="alert">{{ auth.error }}</p>
-      <a v-if="auth.loginAvailable" class="button primary" href="/api/auth/login">使用 GitHub 登入</a>
-      <button v-if="isDev" class="button primary" type="button" @click="auth.startPreview()">進入本機預覽</button>
-      <p v-if="isDev" class="footnote">本機預覽會將測試紀錄保存在這台裝置；GitHub 登入與跨裝置同步尚未設定。</p>
-      <p class="footnote">
-        Aftertone 是個人紀錄與創作工具，不提供醫療診斷或治療建議。
-      </p>
-    </main>
+  <div class="app-shell" :class="{ 'app-shell--bare': !auth.authenticated }">
+    <main v-if="!auth.ready" class="welcome-pending" aria-busy="true"></main>
+    <WelcomeScreen v-else-if="!auth.authenticated" />
     <template v-else>
-      <div v-if="auth.preview" class="status-banner" role="status">本機預覽模式 · 測試資料只保存在這台裝置</div>
-      <div v-else-if="auth.offline" class="status-banner" role="status">
+      <header class="site-header">
+        <RouterLink class="brand" to="/" aria-label="Aftertone 首頁">
+          <span class="brand-name">Aftertone</span>
+          <small>殘響日誌</small>
+        </RouterLink>
+        <button class="text-button" type="button" @click="auth.logout()">登出</button>
+      </header>
+      <div v-if="auth.offline" class="status-banner" role="status">
         目前離線，紀錄會先保存在這台裝置。
       </div>
       <RouterView />

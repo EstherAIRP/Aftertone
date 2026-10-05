@@ -18,8 +18,6 @@ npx vercel dev --listen 3000
 npm run dev
 ```
 
-若只想試操作流程，單獨執行 `npm run dev`，開啟頁面後選擇「進入本機預覽」。此入口只存在於開發版，測試資料僅儲存在目前瀏覽器；正式建置不會開啟預覽入口。
-
 Vite 預設在 `http://localhost:5173`，將 `/api` 轉送到本機 Vercel 函式。`APP_ORIGIN` 應設為 `http://localhost:5173`，GitHub OAuth callback 也需對應。正式部署時設定相同環境變數，將 `APP_ORIGIN` 換成正式 HTTPS 網域。
 
 ```sh
