@@ -2145,7 +2145,7 @@ legend {
 }
 .insights-section-en {
   margin: 0;
-  color: var(--outline);
+  color: var(--text-2);
   font-family: var(--font-display);
   font-style: italic;
   font-size: var(--text-sm);
@@ -2167,7 +2167,7 @@ legend {
   display: grid;
   grid-template-columns: 22px repeat(5, 1fr);
   align-items: center;
-  color: #8a9ab0;
+  color: var(--text-2);
   font-family: var(--font-serif);
   font-size: var(--text-xs);
 }
@@ -2203,7 +2203,7 @@ legend {
 .insights-trend-dates {
   display: flex;
   justify-content: space-between;
-  color: var(--outline);
+  color: var(--text-2);
   font-family: var(--font-display);
   font-size: var(--text-sm);
 }
@@ -2308,13 +2308,13 @@ legend {
 }
 .status-word span {
   margin-left: 6px;
-  color: var(--outline);
+  color: var(--text-2);
   font-family: var(--font-display);
   font-size: var(--text-sm);
 }
-.status-word--1 { color: #8ea0b8; font-size: var(--text-sm); }
-.status-word--2 { color: #6f86a5; font-size: var(--text-md); }
-.status-word--3 { color: #5a7499; font-size: var(--text-lg); }
+.status-word--1 { color: #5f7390; font-size: var(--text-sm); }
+.status-word--2 { color: #566d8c; font-size: var(--text-md); }
+.status-word--3 { color: #4f6788; font-size: var(--text-lg); }
 .status-word--4 { color: var(--accent); font-size: var(--text-xl); }
 .insights-section + .insights-note,
 .status-words + .insights-note {
@@ -2343,7 +2343,7 @@ legend {
   font-weight: var(--weight-regular);
 }
 .insights-disclaimer {
-  color: #9aa9bc;
+  color: var(--text-2);
   font-size: var(--text-xs);
   line-height: var(--leading-loose);
 }

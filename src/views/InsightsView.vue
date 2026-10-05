@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import InsightsHeatmap from "../components/InsightsHeatmap.vue";
 import IntensityTrend from "../components/IntensityTrend.vue";
@@ -21,9 +21,20 @@ const events = ref<TinnitusEvent[]>([]);
 const artworks = ref<DailyArtwork[]>([]);
 const error = ref("");
 const loading = ref(true);
-const today = localDateKey(new Date());
+const today = ref(localDateKey(new Date()));
+
+function refreshToday() {
+  today.value = localDateKey(new Date());
+}
+
+function refreshTodayWhenVisible() {
+  if (document.visibilityState === "visible") refreshToday();
+}
 
 onMounted(async () => {
+  refreshToday();
+  document.addEventListener("visibilitychange", refreshTodayWhenVisible);
+  window.addEventListener("pageshow", refreshToday);
   try {
     ({ events: events.value, artworks: artworks.value } =
       await getInsightsData());
@@ -34,13 +45,18 @@ onMounted(async () => {
   }
 });
 
+onUnmounted(() => {
+  document.removeEventListener("visibilitychange", refreshTodayWhenVisible);
+  window.removeEventListener("pageshow", refreshToday);
+});
+
 // The range lives in the URL (`/insights`, `/insights?range=7`).
 const range = computed(() => parseInsightRange(route.query.range));
 function show(next: InsightRange) {
   void router.replace({ query: next === 30 ? {} : { range: String(next) } });
 }
 const summary = computed(() =>
-  summarizeRange(events.value, artworks.value, range.value, today),
+  summarizeRange(events.value, artworks.value, range.value, today.value),
 );
 const enough = computed(() => summary.value.eventCount >= 3);
 const timing = computed(() => describeTiming(summary.value.heatmap));
@@ -50,7 +66,11 @@ const timing = computed(() => describeTiming(summary.value.heatmap));
   <main class="page insights-page">
     <p class="eyebrow">LOOKING BACK</p>
     <h1>回望</h1>
-    <div class="archive-switch insights-range" role="group" aria-label="回望期間">
+    <div
+      class="archive-switch insights-range"
+      role="group"
+      aria-label="回望期間"
+    >
       <button
         v-for="days in INSIGHT_RANGES"
         :key="days"
@@ -116,10 +136,12 @@ const timing = computed(() => describeTiming(summary.value.heatmap));
 
         <div class="insights-works">
           <RouterLink to="/gallery">
-            <strong>{{ summary.artworkCount }}</strong>已完成的意象 ›
+            <strong>{{ summary.artworkCount }}</strong
+            >已完成的意象 ›
           </RouterLink>
           <RouterLink to="/gallery?view=calendar">
-            <strong>{{ summary.pendingImageCount }}</strong>等待一張圖 ›
+            <strong>{{ summary.pendingImageCount }}</strong
+            >等待一張圖 ›
           </RouterLink>
         </div>
       </template>

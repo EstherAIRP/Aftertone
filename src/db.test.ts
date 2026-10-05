@@ -9,6 +9,7 @@ import {
   getArtworkImage,
   getDay,
   getInsightsData,
+  openDatabase,
   removeArtworkImage,
   setArtworkImage,
 } from "./db";
@@ -281,6 +282,38 @@ describe("schema migration", () => {
 });
 
 describe("getInsightsData", () => {
+  it("normalizes image metadata on legacy artwork records", async () => {
+    const db = await openDatabase();
+    const tx = db.transaction("artworks", "readwrite");
+    tx.objectStore("artworks").put({
+      id: "legacy-artwork",
+      date: "2026-09-01",
+      title: "舊意象",
+      draftZh: "",
+      draftEn: "",
+      finalZh: "舊提示",
+      finalEn: "legacy prompt",
+      imagePath: null,
+      completedAt: "",
+      updatedAt: "",
+    });
+    await new Promise<void>((resolve, reject) => {
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error);
+    });
+    db.close();
+
+    const data = await getInsightsData();
+
+    expect(data.artworks).toHaveLength(1);
+    expect(data.artworks[0]).toMatchObject({
+      imageSync: null,
+      imageWidth: null,
+      imageHeight: null,
+    });
+  });
+
   it("returns every event and artwork", async () => {
     await addEvent(eventAt("2026-09-01T10:00"));
     await completedDay("2026-09-02");
