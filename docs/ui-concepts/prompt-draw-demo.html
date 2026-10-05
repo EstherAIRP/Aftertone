@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>抽取動畫 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f5f8fc;
+    --text: #34445d;
+    --text-2: #53647b;
+    --accent: #47648a;
+    --outline: #8fa8c8;
+    --serif: "Noto Serif TC", "Songti TC", serif;
+    --sans: "Noto Sans TC", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(155deg, #f5f8fc, #edf3fa 55%, #f9fbfd);
+    color: var(--text);
+    font-family: var(--sans);
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ---------- phone mock ---------- */
+  .phone {
+    width: 375px;
+    height: 760px;
+    border-radius: 38px;
+    padding: 10px;
+    background: #dfe7f1;
+    box-shadow: 0 30px 60px rgba(52, 68, 93, .16), inset 0 0 0 1px rgba(143, 168, 200, .5);
+    flex: none;
+  }
+  .screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    overflow: hidden;
+    background: var(--bg);
+    cursor: pointer;
+    isolation: isolate;
+  }
+  .screen::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 75%;
+    background:
+      linear-gradient(180deg, rgba(247,250,253,.45), rgba(248,250,253,.4) 57%, transparent),
+      url("../../public/images/window-light.webp") center 35% / cover no-repeat;
+    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+    mask-image: linear-gradient(180deg, #000 55%, transparent);
+    z-index: -1;
+  }
+  .content { position: absolute; inset: 0; padding: 66px 22px 0; }
+  .back { font-size: .85rem; font-weight: 600; color: var(--text); }
+  .eyebrow {
+    margin: 26px 0 8px;
+    font-size: .72rem;
+    letter-spacing: .14em;
+    color: #58779e;
+    font-weight: 600;
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 1.62rem;
+    line-height: 1.4;
+    letter-spacing: .02em;
+  }
+
+  .card {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    top: 268px;
+    min-height: 196px;
+    padding: 24px 22px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, .82);
+    border: 1px solid rgba(159, 180, 207, .55);
+    box-shadow: 0 18px 40px rgba(71, 100, 138, .1);
+    backdrop-filter: blur(14px);
+    overflow: hidden;
+  }
+  .card-wash {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 90% at 50% 0%, var(--tint) 0%, transparent 62%);
+    opacity: .38;
+    pointer-events: none;
+  }
+  /* category vignette: top third of the card, fading downward into the glass */
+  .card-art {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 40%;
+    background: var(--art) center 40% / cover no-repeat;
+    -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.95) 0%, rgba(0,0,0,.6) 45%, transparent 100%);
+    mask-image: linear-gradient(180deg, rgba(0,0,0,.95) 0%, rgba(0,0,0,.6) 45%, transparent 100%);
+    pointer-events: none;
+  }
+  .tag {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 12px 4px 10px;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--deep);
+    background: color-mix(in srgb, var(--tint) 45%, white);
+  }
+  .tag-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vivid);
+    box-shadow: 0 0 6px var(--tint);
+  }
+  .zh {
+    position: relative;
+    margin: 16px 0 10px;
+    font-family: var(--serif);
+    font-size: 1.12rem;
+    line-height: 1.6;
+  }
+  .en { position: relative; margin: 0; font-size: .9rem; color: var(--text-2); line-height: 1.55; }
+  .actions {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    top: 490px;
+    display: flex;
+    gap: 10px;
+  }
+  .btn {
+    padding: 11px 20px;
+    border-radius: 999px;
+    font-size: .9rem;
+    font-weight: 600;
+    border: 1px solid var(--outline);
+    background: rgba(255,255,255,.7);
+    color: var(--text);
+  }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .nav {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 64px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: .72rem;
+    color: #60738e;
+    background: linear-gradient(180deg, rgba(249,251,254,.2), rgba(249,251,254,.92) 30%);
+  }
+
+  /* ---------- animation layer ---------- */
+  .fx { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+  .dot {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    margin: -11px 0 0 -11px;
+    will-change: transform;
+  }
+  .dot-core, .dot-tint {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+  }
+  .dot-core {
+    background: radial-gradient(circle, #fff 0 22%, #b9c6d8 42%, #9aabc2 62%, rgba(154,171,194,0) 72%);
+    box-shadow: 0 0 16px 6px rgba(154, 171, 194, .55), 0 0 40px 14px rgba(200, 214, 233, .45);
+  }
+  .dot-tint {
+    background: radial-gradient(circle, #fff 0 22%, var(--tint) 44%, var(--vivid) 64%, transparent 74%);
+    box-shadow: 0 0 18px 7px color-mix(in srgb, var(--vivid) 60%, transparent), 0 0 46px 18px color-mix(in srgb, var(--tint) 55%, transparent);
+    opacity: 0;
+  }
+  .glint {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    opacity: 0;
+  }
+  .glint svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid var(--ring);
+    opacity: 0;
+    transform: translate(-50%, -50%);
+  }
+  .bloom {
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    margin: -210px 0 0 -210px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--tint) 70%, transparent) 0%, color-mix(in srgb, var(--tint) 25%, transparent) 38%, transparent 66%);
+    opacity: 0;
+  }
+
+  .phase {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: .7rem;
+    letter-spacing: .08em;
+    color: var(--text-2);
+    background: rgba(255,255,255,.75);
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    z-index: 6;
+  }
+
+  /* ---------- controls ---------- */
+  .panel {
+    width: 340px;
+    max-width: 100%;
+    display: grid;
+    gap: 22px;
+    padding-top: 8px;
+  }
+  .panel h2 { margin: 0 0 4px; font-family: var(--serif); font-weight: 500; font-size: 1.35rem; }
+  .panel p { margin: 0; color: var(--text-2); font-size: .88rem; line-height: 1.6; }
+  .group-label { font-size: .78rem; font-weight: 600; color: var(--text-2); margin-bottom: 8px; letter-spacing: .04em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font: inherit;
+    font-size: .85rem;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--outline);
+    background: rgba(255,255,255,.75);
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .chip i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .chip[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .action {
+    font: inherit;
+    font-weight: 600;
+    font-size: .9rem;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+  }
+  .action.ghost { background: transparent; color: var(--accent); }
+  label.check { display: flex; gap: 8px; align-items: center; font-size: .88rem; cursor: pointer; }
+  .timeline { font-size: .8rem; color: var(--text-2); line-height: 1.8; margin: 0; padding-left: 18px; }
+  .timeline b { color: var(--text); font-weight: 600; }
+  :focus-visible { outline: 3px solid #476b9d; outline-offset: 2px; }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen" id="screen" title="點擊畫面可跳過動畫">
+      <div class="phase" id="phase">準備</div>
+      <div class="content">
+        <div class="back">← 回首頁</div>
+        <p class="eyebrow" id="eyebrow">已保存於此裝置</p>
+        <h1 id="title">今天的意象<br />多了一段描述。</h1>
+      </div>
+      <section class="card" id="card">
+        <div class="card-wash" id="wash"></div>
+        <div class="card-art" id="art"></div>
+        <span class="tag" id="tag"><span class="tag-dot" id="tagDot"></span><span id="tagText">姿勢</span></span>
+        <p class="zh" id="zh"></p>
+        <p class="en" id="en"></p>
+      </section>
+      <div class="actions" id="actions">
+        <span class="btn primary">查看當日意象</span><span class="btn">再記一筆</span>
+      </div>
+      <div class="nav"><span>首頁</span><span>記錄</span><span>收藏</span></div>
+      <div class="fx" id="fx"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div>
+      <h2>落光 × 漣漪</h2>
+      <p>灰藍光點飄落，落在卡片上泛起漣漪，一圈圈染上被抽中類別的顏色，最後顯示片段。點擊手機畫面可以跳過。</p>
+    </div>
+
+    <div>
+      <div class="group-label">抽中的類別</div>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="row">
+      <button class="action" id="play" type="button">重播</button>
+      <button class="action ghost" id="skip" type="button">跳過</button>
+    </div>
+
+    <div>
+      <div class="group-label">速度</div>
+      <div class="chips" id="speeds"></div>
+    </div>
+
+    <div style="display:grid;gap:10px">
+      <label class="check"><input type="checkbox" id="reduced" /> 模擬「減少動態」設定</label>
+      <label class="check"><input type="checkbox" id="loop" /> 自動循環播放</label>
+    </div>
+
+    <div>
+      <div class="group-label">時間軸（1× 速度）</div>
+      <ol class="timeline">
+        <li><b>0–2.6s 落光</b>：灰藍光點從「已保存於此裝置」下方出現，由小漸大、左右大幅飄落，周圍與軌跡留下稜鏡微光</li>
+        <li><b>2.6s 觸及</b>：光點輕輕一沉，開始染上類別色</li>
+        <li><b>2.6–4.3s 漣漪</b>：四圈波紋由灰藍漸變為類別色，卡片底色暈開</li>
+        <li><b>3.3–4.1s 浮現</b>：標題與卡片由霧中清晰，文字依序從模糊對焦</li>
+        <li><b>3.9–4.6s 歸位</b>：光點縮小，落進類別標籤前的小圓點</li>
+      </ol>
+    </div>
+  </div>
+
+<script>
+const CATS = [
+  { key: "person", label: "人物", tint: "#b7c7d9", zh: "神情沉靜、輪廓柔和的人物", en: "a quiet figure with soft features" },
+  { key: "clothing", label: "服裝", tint: "#e8cbd8", zh: "穿著輕便而簡潔的衣物", en: "wearing light, simple clothing" },
+  { key: "background", label: "背景", tint: "#b8dce3", zh: "置身有柔和日光的安靜空間", en: "in a quiet space with gentle daylight" },
+  { key: "atmosphere", label: "氛圍", tint: "#d4c7e8", zh: "氛圍朦朧而緩慢", en: "the atmosphere is hazy and unhurried" },
+  { key: "composition", label: "構圖", tint: "#eadfae", zh: "偏左的留白構圖", en: "a left-weighted composition with ample negative space" },
+  { key: "color", label: "色調", tint: "#c8dec7", zh: "以低飽和冰藍與銀灰為主色", en: "a muted palette of icy blue and silver gray" },
+  { key: "pose", label: "姿勢", tint: "#ebc5a9", zh: "靜靜停留，望向遠方", en: "resting quietly and looking into the distance" },
+];
+const GREY = "#9aabc2";
+
+// ---------- color helpers ----------
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const toHex = a => "#" + a.map(v => Math.round(v).toString(16).padStart(2, "0")).join("");
+const mix = (a, b, t) => toHex(hex(a).map((v, i) => v + (hex(b)[i] - v) * t));
+const deepOf = tint => mix(tint, "#56677f", 0.42); // muted, readable: tag text
+// Same hue as the tint, more saturated and a little deeper: rings, dot halo.
+function vividOf(h) {
+  let [r, g, b] = hex(h).map(v => v / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min;
+  let hue = 0;
+  if (d) {
+    hue = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    hue *= 60;
+  }
+  const s = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+  const S = Math.min(1, s * 0.8 + 0.02), L = Math.max(0, l - 0.16);
+  const C = (1 - Math.abs(2 * L - 1)) * S, X = C * (1 - Math.abs(((hue / 60) % 2) - 1)), m = L - C / 2;
+  const [R, G, B] = hue < 60 ? [C, X, 0] : hue < 120 ? [X, C, 0] : hue < 180 ? [0, C, X] : hue < 240 ? [0, X, C] : hue < 300 ? [X, 0, C] : [C, 0, X];
+  return toHex([R + m, G + m, B + m].map(v => v * 255));
+}
+
+// ---------- state ----------
+let current = "random";
+let speed = 1;
+let loopTimer = null;
+const $ = id => document.getElementById(id);
+const screen = $("screen"), fx = $("fx"), card = $("card");
+
+// ---------- controls ----------
+const chips = $("chips");
+[{ key: "random", label: "隨機" }, ...CATS].forEach(c => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "chip";
+  b.innerHTML = (c.tint ? `<i style="background:${c.tint}"></i>` : "") + c.label;
+  b.setAttribute("aria-pressed", c.key === current);
+  b.onclick = () => {
+    current = c.key;
+    chips.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b));
+    play();
+  };
+  chips.appendChild(b);
+});
+const speeds = $("speeds");
+[0.5, 1, 1.5].forEach(s => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "chip";
+  b.textContent = s + "×";
+  b.setAttribute("aria-pressed", s === speed);
+  b.onclick = () => {
+    speed = s;
+    speeds.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b));
+    play();
+  };
+  speeds.appendChild(b);
+});
+$("play").onclick = play;
+$("skip").onclick = skip;
+screen.onclick = skip;
+$("reduced").onchange = play;
+$("loop").onchange = () => { if ($("loop").checked) play(); else clearTimeout(loopTimer); };
+
+// ---------- glint (four-point prism star) ----------
+const STAR = "M0,-6 C0.7,-1.1 1.1,-0.7 6,0 C1.1,0.7 0.7,1.1 0,6 C-0.7,1.1 -1.1,0.7 -6,0 C-1.1,-0.7 -0.7,-1.1 0,-6Z";
+const GLINT_FILLS = ["#ffffff", "#eef4ff", "#f3eeff", "#ecfbfb"];
+function glint(x, y, size, fill) {
+  const g = document.createElement("div");
+  g.className = "glint";
+  g.style.left = x + "px";
+  g.style.top = y + "px";
+  g.style.width = g.style.height = size + "px";
+  g.style.margin = `${-size / 2}px 0 0 ${-size / 2}px`;
+  g.innerHTML = `<svg viewBox="-7 -7 14 14"><path d="${STAR}" fill="${fill}" style="filter:drop-shadow(0 0 2px rgba(160,190,230,.9))"/></svg>`;
+  return g;
+}
+const twinkle = [
+  { opacity: 0, transform: "scale(.2) rotate(0deg)" },
+  { opacity: 1, transform: "scale(1) rotate(25deg)", offset: 0.45 },
+  { opacity: 0, transform: "scale(.3) rotate(45deg)" },
+];
+
+// ---------- the animation ----------
+let anims = [];
+function A(el, frames, opts) {
+  const a = el.animate(frames, { fill: "both", easing: "ease-in-out", ...opts });
+  a.playbackRate = speed;
+  anims.push(a);
+  return a;
+}
+
+function reset() {
+  clearTimeout(loopTimer);
+  anims.forEach(a => a.cancel());
+  anims = [];
+  fx.innerHTML = "";
+  cancelAnimationFrame(phaseRaf);
+}
+
+function pick() {
+  if (current !== "random") return CATS.find(c => c.key === current);
+  return CATS[Math.floor(Math.random() * CATS.length)];
+}
+
+let phaseRaf = 0;
+function trackPhase(master, marks) {
+  const el = $("phase");
+  const tick = () => {
+    const t = master.currentTime ?? 0;
+    let label = marks[0][1];
+    for (const [at, name] of marks) if (t >= at) label = name;
+    el.textContent = label;
+    if (master.playState !== "finished") phaseRaf = requestAnimationFrame(tick);
+    else el.textContent = "完成";
+  };
+  tick();
+}
+
+function play() {
+  reset();
+  const cat = pick();
+  const tint = cat.tint, deep = deepOf(tint), vivid = vividOf(tint);
+  screen.style.setProperty("--tint", tint);
+  screen.style.setProperty("--deep", deep);
+  screen.style.setProperty("--vivid", vivid);
+  $("art").style.setProperty("--art", `url("../../public/images/categories/${cat.key}.webp")`);
+  card.style.borderColor = vivid;
+  $("tagText").textContent = cat.label;
+  $("zh").textContent = cat.zh;
+  $("en").textContent = cat.en;
+
+  const textEls = [$("tag"), $("zh"), $("en")];
+  const reduced = $("reduced").checked;
+
+  if (reduced) {
+    // Reduced motion: a single short fade, no movement.
+    const master = A(card, [{ opacity: 0 }, { opacity: 1 }], { duration: 220 });
+    A($("title"), [{ opacity: 0 }, { opacity: 1 }], { duration: 220 });
+    A($("actions"), [{ opacity: 0 }, { opacity: 1 }], { duration: 220 });
+    [...textEls, $("wash"), $("tagDot")].forEach(el => A(el, [{ opacity: 1 }, { opacity: 1 }], { duration: 1 }));
+    A($("wash"), [{ opacity: 0.38 }, { opacity: 0.38 }], { duration: 1 });
+    trackPhase(master, [[0, "減少動態：淡入"]]);
+    scheduleLoop(master);
+    return;
+  }
+
+  // Geometry (screen coordinates)
+  const sr = screen.getBoundingClientRect();
+  const cr = card.getBoundingClientRect();
+  const cx = cr.left - sr.left + cr.width / 2;
+  const cy = cr.top - sr.top + cr.height / 2 - 6;
+  const td = $("tagDot").getBoundingClientRect();
+  const tx = td.left - sr.left + td.width / 2 - cx;
+  const ty = td.top - sr.top + td.height / 2 - cy;
+
+  const FALL = 2600;
+  const LAND = FALL;
+  const er = $("eyebrow").getBoundingClientRect();
+  const startY = er.bottom - sr.top + 22; // just below「已保存於此裝置」
+
+  // Hidden starting states (the title waits for the card so the light falls through empty space)
+  A($("title"), [
+    { opacity: 0, filter: "blur(6px)" },
+    { opacity: 1, filter: "blur(0)" },
+  ], { duration: 800, delay: FALL + 650 });
+  A(card, [{ opacity: 0 }, { opacity: 0 }], { duration: 1 });
+  A($("actions"), [{ opacity: 0 }, { opacity: 0 }], { duration: 1 });
+  textEls.forEach(el => A(el, [{ opacity: 0 }, { opacity: 0 }], { duration: 1 }));
+  A($("tagDot"), [{ opacity: 0 }, { opacity: 0 }], { duration: 1 });
+
+  // --- 1. falling light ---
+  const H = cy - startY; // fall distance
+  const path = t => {
+    const p = -(Math.cos(Math.PI * t) - 1) / 2; // ease-in-out progress
+    const sway = 46 * Math.sin(2.6 * Math.PI * t + 0.5) * Math.pow(1 - p, 0.7);
+    return [sway, -H * (1 - p)];
+  };
+  // grows from a faint speck to full size as it falls
+  const grow = t => 0.3 + 0.7 * (1 - Math.pow(1 - t, 1.6));
+  const dot = document.createElement("div");
+  dot.className = "dot";
+  dot.style.left = cx + "px";
+  dot.style.top = cy + "px";
+  dot.innerHTML = '<div class="dot-core"></div><div class="dot-tint"></div>';
+  fx.appendChild(dot);
+
+  const N = 40;
+  const fallFrames = [];
+  for (let i = 0; i <= N; i++) {
+    const [x, y] = path(i / N);
+    fallFrames.push({ transform: `translate(${x}px, ${y}px) scale(${grow(i / N).toFixed(3)})`, offset: i / N });
+  }
+  // fall, then a gentle settle, then glide into the tag dot
+  A(dot, fallFrames, { duration: FALL, easing: "linear" });
+  A(dot, [
+    { transform: "translate(0,0) scale(1)" },
+    { transform: "translate(0,3px) scale(1.28)", offset: 0.4 },
+    { transform: "translate(0,0) scale(1.1)" },
+  ], { duration: 600, delay: LAND, fill: "forwards", composite: "replace" });
+  const homing = A(dot, [
+    { transform: "translate(0,0) scale(1.1)", opacity: 1 },
+    { transform: `translate(${tx}px, ${ty}px) scale(.45)`, opacity: 1, offset: 0.85 },
+    { transform: `translate(${tx}px, ${ty}px) scale(.45)`, opacity: 0 },
+  ], { duration: 700, delay: LAND + 1300, fill: "forwards" });
+
+  // colour shift on landing
+  A(dot.querySelector(".dot-tint"), [{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: LAND - 100 });
+  A(dot.querySelector(".dot-core"), [{ opacity: 1 }, { opacity: 0 }], { duration: 900, delay: LAND - 100 });
+
+  // glints orbiting the falling dot
+  [[-34, -20, 13], [30, -12, 10], [-22, 30, 9], [36, 26, 12], [2, -44, 9], [-46, 6, 8], [46, -2, 9], [8, 40, 10]].forEach(([ox, oy, s], i) => {
+    const g = glint(11 + ox, 11 + oy, s, GLINT_FILLS[i % GLINT_FILLS.length]);
+    dot.appendChild(g);
+    A(g, twinkle, { duration: 800, delay: 150 + i * 190, iterations: 3, fill: "none" });
+  });
+  // glints left behind along the trail
+  [0.12, 0.24, 0.36, 0.47, 0.58, 0.69, 0.8].forEach((t, i) => {
+    const [x, y] = path(t);
+    const jitter = (i % 2 ? 1 : -1) * (14 + (i * 7) % 18);
+    const g = glint(cx + x + jitter, cy + y + ((i * 11) % 20) - 10, 9 + (i % 3) * 3, GLINT_FILLS[i % GLINT_FILLS.length]);
+    fx.appendChild(g);
+    A(g, twinkle, { duration: 900, delay: t * FALL + 60, fill: "none" });
+  });
+
+  // --- 2. ripples, grey-blue → category colour ---
+  const bloom = document.createElement("div");
+  bloom.className = "bloom";
+  bloom.style.left = cx + "px";
+  bloom.style.top = cy + "px";
+  fx.prepend(bloom);
+  A(bloom, [
+    { opacity: 0, transform: "scale(.15)" },
+    { opacity: .9, transform: "scale(.6)", offset: 0.35 },
+    { opacity: 0, transform: "scale(1.15)" },
+  ], { duration: 2000, delay: LAND + 80, easing: "cubic-bezier(.25,.6,.3,1)", fill: "none" });
+
+  const RINGS = 4;
+  for (let i = 0; i < RINGS; i++) {
+    const r = document.createElement("div");
+    r.className = "ring";
+    r.style.left = cx + "px";
+    r.style.top = cy + "px";
+    fx.appendChild(r);
+    const end = 200 + i * 70;
+    // each ring is born grey-blue and takes on the category colour as it spreads;
+    // later rings start further along, so the whole ripple warms up ring by ring
+    const from = mix(GREY, vivid, 0.25 + i * 0.2);
+    A(r, [
+      { width: "14px", height: "14px", opacity: 0, borderWidth: "2px", borderColor: from },
+      { opacity: 0.9, offset: 0.12 },
+      { borderColor: vivid, offset: 0.55 },
+      { width: end + "px", height: end + "px", opacity: 0, borderWidth: "0.5px", borderColor: vivid },
+    ], { duration: 1700, delay: LAND + i * 230, easing: "cubic-bezier(.2,.55,.35,1)", fill: "none" });
+  }
+  // a loose ring of glints scattered around the ripple
+  for (let i = 0; i < 7; i++) {
+    const ang = (i / 7) * Math.PI * 2 + 0.4;
+    const rad = 55 + (i % 3) * 22;
+    const g = glint(cx + Math.cos(ang) * rad, cy + Math.sin(ang) * rad * 0.9, 9 + (i % 3) * 3, i % 2 ? "#ffffff" : mix("#ffffff", vivid, 0.35));
+    fx.appendChild(g);
+    A(g, twinkle, { duration: 900, delay: LAND + 250 + i * 140, fill: "none" });
+  }
+
+  // --- 3. card surfaces, text comes into focus ---
+  A(card, [
+    { opacity: 0, transform: "scale(.965)", filter: "blur(8px)", borderColor: "rgba(159,180,207,.55)" },
+    { opacity: 1, transform: "scale(1)", filter: "blur(0)", borderColor: "rgba(159,180,207,.55)", offset: 0.5 },
+    { opacity: 1, transform: "scale(1)", filter: "blur(0)", borderColor: vivid },
+  ], { duration: 1300, delay: LAND + 650, easing: "cubic-bezier(.3,.7,.3,1)" });
+  // the category image settles in from a soft zoom
+  A($("art"), [
+    { opacity: 0, transform: "scale(1.08)" },
+    { opacity: 1, transform: "scale(1)" },
+  ], { duration: 1400, delay: LAND + 750, easing: "cubic-bezier(.3,.7,.3,1)" });
+  A($("wash"), [{ opacity: 0 }, { opacity: .38 }], { duration: 1400, delay: LAND + 500 });
+  textEls.forEach((el, i) => A(el, [
+    { opacity: 0, filter: "blur(6px)", transform: "translateY(4px)" },
+    { opacity: 1, filter: "blur(0)", transform: "translateY(0)" },
+  ], { duration: 650, delay: LAND + 1000 + i * 160, easing: "cubic-bezier(.3,.7,.3,1)" }));
+  A($("tagDot"), [{ opacity: 0, transform: "scale(.4)" }, { opacity: 1, transform: "scale(1)" }],
+    { duration: 260, delay: LAND + 1300 + 560 });
+  const master = A($("actions"), [{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "translateY(0)" }],
+    { duration: 500, delay: LAND + 1750 });
+
+  trackPhase(master, [
+    [0, "落光"],
+    [LAND, "觸及・漣漪染色"],
+    [LAND + 650, "意象浮現"],
+    [LAND + 1300, "光點歸位"],
+  ]);
+  scheduleLoop(master);
+}
+
+function scheduleLoop(master) {
+  master.finished.then(() => {
+    if ($("loop").checked) loopTimer = setTimeout(play, 1600);
+  }).catch(() => {});
+}
+
+function skip() {
+  anims.forEach(a => { try { a.finish(); } catch {} });
+}
+
+addEventListener("load", () => setTimeout(play, 300));
+</script>
+</body>
+</html>

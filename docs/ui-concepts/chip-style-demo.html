@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>選項樣式 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f5f8fc;
+    --text: #34445d;
+    --text-2: #53647b;
+    --text-3: #7d8ca1;
+    --accent: #47648a;
+    --accent-dark: #344e72;
+    --line: rgba(143, 168, 200, 0.62);
+    --line-soft: #c9d6e6;
+    --font-display: "Cormorant Garamond", "Noto Serif TC", Georgia, serif;
+    --font-serif: "Noto Serif TC", "Songti TC", serif;
+    --font-sans: "Noto Sans TC", system-ui, sans-serif;
+    --glass-bg: rgba(255, 255, 255, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.88);
+    --glass-blur: blur(18px) saturate(1.25);
+    --glass-shadow: 0 8px 32px rgba(80, 104, 138, 0.12);
+    --glass-highlight: inset 0 1px rgba(255, 255, 255, 0.75);
+    --control-bg: rgba(255, 255, 255, 0.45);
+    --selected-tint: rgba(71, 100, 138, 0.12);
+    --focus-ring: #476b9d;
+    --intensity-1: color-mix(in srgb, var(--accent) 14%, white);
+    --intensity-2: color-mix(in srgb, var(--accent) 26%, white);
+    --intensity-3: color-mix(in srgb, var(--accent) 38%, white);
+    --intensity-4: color-mix(in srgb, var(--accent) 90%, white);
+    --intensity-5: var(--accent-dark);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(155deg, #f5f8fc, #edf3fa 55%, #f9fbfd);
+    color: var(--text);
+    font-family: var(--font-sans);
+    padding: 32px 16px 48px;
+  }
+  header { max-width: 1240px; margin: 0 auto 28px; text-align: center; }
+  header h1 { font-family: var(--font-serif); font-weight: 500; font-size: 1.5rem; letter-spacing: 0.08em; margin: 0 0 6px; }
+  header p { margin: 0; color: var(--text-2); font-size: 0.875rem; }
+  .stage { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .col h2 { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: 1.2rem; letter-spacing: 0.08em; }
+  .col h2 small { display: block; text-align: center; font-family: var(--font-sans); font-size: 0.78rem; color: var(--text-2); letter-spacing: 0.04em; margin-top: 2px; }
+
+  .phone {
+    width: 375px; max-width: calc(100vw - 32px); height: 780px;
+    border-radius: 38px; padding: 10px; background: #dfe7f1;
+    box-shadow: 0 30px 60px rgba(52, 68, 93, .16), inset 0 0 0 1px rgba(143, 168, 200, .5);
+  }
+  .screen {
+    position: relative; height: 100%; border-radius: 30px; overflow-y: auto; overflow-x: hidden;
+    background:
+      linear-gradient(180deg, rgba(247,250,253,.55), rgba(248,250,253,.45) 50%, rgba(245,248,252,.8)),
+      var(--bg) url("../../public/images/window-light.webp") top center / cover no-repeat;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+  .inner { padding: 28px 18px 32px; }
+  .page-title { font-family: var(--font-serif); font-weight: 500; font-size: 1.5rem; letter-spacing: 0.08em; margin: 8px 4px 4px; }
+  .page-sub { color: var(--text-2); font-size: 0.875rem; margin: 0 4px 18px; }
+
+  .card {
+    border: 1px solid var(--glass-border); border-radius: 24px; padding: 22px 18px 24px;
+    background: var(--glass-bg); box-shadow: var(--glass-shadow), var(--glass-highlight);
+    -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  }
+  .section + .section { margin-top: 40px; }
+  .section-heading { font-family: var(--font-serif); font-weight: 500; font-size: 1.5rem; letter-spacing: 0.08em; margin: 0 0 22px; display: flex; align-items: baseline; gap: 10px; }
+  .section-heading::after { content: ""; position: absolute; }
+  .section-heading-wrap { position: relative; margin-bottom: 22px; }
+  .section-heading-wrap .section-heading { margin: 0 0 10px; }
+  .section-heading-wrap::after { content: ""; display: block; width: 35px; height: 1px; background: var(--line); }
+  .tag { font-family: var(--font-sans); font-size: 0.78rem; color: var(--text-2); background: rgba(143,168,200,.18); padding: 1px 10px; border-radius: 999px; letter-spacing: 0.04em; }
+
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  fieldset + fieldset { margin-top: 24px; }
+  legend { padding: 0; margin-bottom: 8px; font-size: 0.875rem; font-weight: 500; color: var(--text-2); letter-spacing: 0.04em; display: flex; align-items: center; gap: 8px; }
+
+  .time-card { padding: 12px 16px; border-radius: 14px; border: 1px solid var(--glass-border); background: rgba(255,255,255,.4); margin-bottom: 10px; }
+  .time-card .d { font-size: 0.78rem; color: var(--text-2); }
+  .time-card .t { font-family: var(--font-display); font-size: 2.7rem; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+
+  /* shared: hidden native inputs */
+  .opt { position: relative; cursor: pointer; display: block; }
+  .opt input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .opt span { display: grid; place-items: center; white-space: nowrap; user-select: none; }
+  .opt input:focus-visible + span { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .grid.c2 { grid-template-columns: repeat(2, 1fr); }
+  .wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  /* intensity — same in every variant */
+  .scale { width: max-content; }
+  .scale .row { display: flex; gap: 8px; }
+  .scale .opt span { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--control-bg); font-variant-numeric: lining-nums tabular-nums; transition: background .2s, color .2s, border-color .2s; }
+  .scale .opt.f span { border-color: transparent; }
+  .scale .opt.f[data-l="1"] span { background: var(--intensity-1); }
+  .scale .opt.f[data-l="2"] span { background: var(--intensity-2); }
+  .scale .opt.f[data-l="3"] span { background: var(--intensity-3); }
+  .scale .opt.f[data-l="4"] span { background: var(--intensity-4); color: #fff; }
+  .scale .opt.f[data-l="5"] span { background: var(--intensity-5); color: #fff; }
+  .scale .opt input:checked + span { box-shadow: 0 0 0 3px rgba(71,100,138,.18); }
+  .scale .ends { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-2); margin-top: 4px; padding: 0 6px; }
+
+  .submit {
+    width: 100%; margin-top: 36px; min-height: 52px; border: 0; border-radius: 999px; cursor: pointer;
+    font: inherit; font-weight: 500; letter-spacing: 0.18em; color: #fff;
+    background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+    box-shadow: inset 0 1px rgba(255,255,255,.25), 0 8px 20px rgba(52,78,114,.25);
+  }
+
+  /* ---------- B · 細框方角 ---------- */
+  .v-b .opt span {
+    min-height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line-soft);
+    background: var(--control-bg); font-size: 0.875rem; color: var(--text);
+    transition: border-color .18s, background .18s, color .18s, transform .12s;
+  }
+  .v-b .wrap .opt span { min-height: 38px; border-radius: 6px; padding: 0 12px; }
+  .v-b .opt input:checked + span { border-color: var(--accent); background: var(--selected-tint); color: var(--accent-dark); font-weight: 500; }
+  .v-b .opt:active span { transform: scale(.97); }
+  .v-b .multi .opt span::before { content: "✓"; width: 0; opacity: 0; overflow: hidden; transition: width .18s, opacity .18s, margin .18s; }
+  .v-b .multi .opt span { grid-auto-flow: column; }
+  .v-b .multi .opt input:checked + span::before { width: 1em; opacity: 1; margin-right: 4px; }
+  @media (hover: hover) { .v-b .opt:hover input:not(:checked) + span { border-color: var(--line); background: rgba(255,255,255,.7); } }
+  .v-b .scale .opt span { border-radius: 50%; padding: 0; min-height: 0; }
+
+  /* ---------- C · 文字＋底線 ---------- */
+  .v-c .grid, .v-c .wrap { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+  .v-c .opt span {
+    min-height: 40px; padding: 0 1px; font-family: var(--font-serif); font-size: 1rem; color: var(--text-3);
+    letter-spacing: 0.06em; position: relative; transition: color .2s;
+  }
+  .v-c .opt span::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 1.5px; background: var(--accent);
+    transform: scaleX(0); transform-origin: left; transition: transform .25s ease-out;
+  }
+  .v-c .opt input:checked + span { color: var(--accent-dark); }
+  .v-c .opt input:checked + span::after { transform: scaleX(1); }
+  .v-c .multi .opt input:checked + span::before { content: "·"; position: absolute; right: -9px; top: 4px; color: var(--accent); }
+  @media (hover: hover) { .v-c .opt:hover input:not(:checked) + span { color: var(--text-2); } }
+  .v-c .scale .row { gap: 8px; }
+  .v-c .scale .opt span { font-family: var(--font-sans); font-size: 0.875rem; padding: 0; min-height: 0; color: var(--text); }
+  .v-c .scale .opt span::after { display: none; }
+
+  /* ---------- D · 分段列 (+B 方框) ---------- */
+  .v-d .seg {
+    position: relative; display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column;
+    border: 1px solid var(--line-soft); border-radius: 12px; padding: 3px; background: var(--control-bg);
+  }
+  .v-d .seg .thumb {
+    position: absolute; top: 3px; bottom: 3px; left: 3px; border-radius: 9px; background: #fff;
+    box-shadow: 0 0 0 1px var(--line-soft), 0 2px 8px rgba(80,104,138,.12);
+    transition: transform .28s cubic-bezier(.3,.7,.2,1);
+  }
+  .v-d .seg .opt { z-index: 1; }
+  .v-d .seg .opt + .opt span { border-left: 1px solid transparent; }
+  .v-d .seg .opt span { min-height: 38px; font-size: 0.875rem; color: var(--text-2); transition: color .2s; }
+  .v-d .seg:has(.opt:nth-of-type(4)) .opt span { font-size: 0.8rem; letter-spacing: 0; }
+  .v-d .seg .opt input:checked + span { color: var(--accent-dark); font-weight: 500; }
+  .v-d .seg .opt input:focus-visible + span { outline-offset: -2px; border-radius: 9px; }
+  .v-d .tiles .opt span, .v-d .wrap .opt span {
+    min-height: 42px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line-soft);
+    background: var(--control-bg); font-size: 0.875rem; transition: border-color .18s, background .18s, color .18s;
+  }
+  .v-d .wrap .opt span { min-height: 38px; border-radius: 6px; }
+  .v-d .tiles .opt input:checked + span, .v-d .wrap .opt input:checked + span { border-color: var(--accent); background: var(--selected-tint); color: var(--accent-dark); font-weight: 500; }
+  .v-d .multi .opt span { grid-auto-flow: column; }
+  .v-d .multi .opt span::before { content: "✓"; width: 0; opacity: 0; overflow: hidden; transition: width .18s, opacity .18s, margin .18s; }
+  .v-d .multi .opt input:checked + span::before { width: 1em; opacity: 1; margin-right: 4px; }
+  .v-d .scale .opt span { padding: 0; min-height: 0; }
+
+  .notes { max-width: 340px; font-size: 0.82rem; color: var(--text-2); line-height: 1.7; margin: 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>選項樣式比較</h1>
+  <p>三支手機都可以實際點選。強度圓圈三者相同，方便只比較選項本身。</p>
+</header>
+
+<div class="stage">
+  <div class="col"><h2>B · 細框方角<small>所有選項統一用小圓角細框</small></h2>
+    <div class="phone"><div class="screen"><div class="inner v-b" data-variant="b"></div></div></div>
+    <ul class="notes"><li>和卡片、輸入框同一套圓角語彙</li><li>選中＝淡藍底＋深藍框，不靠大色塊</li><li>點擊範圍清楚，選項多也不亂</li></ul>
+  </div>
+  <div class="col"><h2>C · 文字＋底線<small>襯線文字，選中加一條細線</small></h2>
+    <div class="phone"><div class="screen"><div class="inner v-c" data-variant="c"></div></div></div>
+    <ul class="notes"><li>最安靜、最有手帳感</li><li>底線由左畫出，像筆劃</li><li>點擊範圍不明顯；選項多時易讀成一段文字</li></ul>
+  </div>
+  <div class="col"><h2>D · 分段列 + 方框<small>少選項用分段列，其餘用 B</small></h2>
+    <div class="phone"><div class="screen"><div class="inner v-d" data-variant="d"></div></div></div>
+    <ul class="notes"><li>時間、耳側用分段列，白色滑塊會滑動</li><li>聲音類型、持續時間、狀態用 B 方框</li><li>層次最多，但同頁兩種元件</li></ul>
+  </div>
+</div>
+
+<script>
+const groups = {
+  time: { legend: "發生時間", opts: ["現在", "15 分鐘前", "1 小時前", "自訂"], sel: 0 },
+  ear: { legend: "耳側", opts: ["左耳", "右耳", "雙耳"], sel: 2 },
+  sound: { legend: "聲音類型", opts: ["高頻", "低頻", "嗡聲", "尖銳", "脈動感", "其他"], sel: 0 },
+  dur: { legend: "持續時間", opts: ["短暫", "30 秒內", "1 分鐘內", "1~3 分鐘", "3 分鐘以上"], sel: 0 },
+  state: { legend: "當下狀態", opts: ["壓力高", "疲勞", "睡眠不足", "安靜環境", "使用耳機後", "工作後", "睡前", "其他"], multi: [1] },
+};
+
+function options(v, key, g, type) {
+  return g.opts.map((o, i) => {
+    const checked = type === "checkbox" ? g.multi.includes(i) : i === g.sel;
+    return `<label class="opt"><input type="${type}" name="${v}-${key}" ${checked ? "checked" : ""} data-i="${i}"><span>${o}</span></label>`;
+  }).join("");
+}
+
+function single(v, key, layout) {
+  const g = groups[key];
+  let body;
+  if (layout === "seg") body = `<div class="seg"><div class="thumb"></div>${options(v, key, g, "radio")}</div>`;
+  else if (layout === "row") body = `<div class="grid">${options(v, key, g, "radio")}</div>`;
+  else body = `<div class="grid tiles ${layout === "c2" ? "c2" : ""}">${options(v, key, g, "radio")}</div>`;
+  return `<fieldset><legend>${g.legend}</legend>${key === "time" ? timeCard() : ""}${body}</fieldset>`;
+}
+
+function timeCard() {
+  return `<div class="time-card"><div class="d">今天 · 10月5日（一）</div><div class="t">09:00</div></div>`;
+}
+
+function intensity(v) {
+  const row = [1, 2, 3, 4, 5].map(n => `<label class="opt ${n <= 2 ? "f" : ""}" data-l="${n}"><input type="radio" name="${v}-int" value="${n}" ${n === 2 ? "checked" : ""} aria-label="${n}${n === 1 ? " 輕微" : n === 5 ? " 明顯" : ""}"><span>${n}</span></label>`).join("");
+  return `<fieldset><legend>強度</legend><div class="scale"><div class="row">${row}</div><div class="ends" aria-hidden="true"><span>輕微</span><span>明顯</span></div></div></fieldset>`;
+}
+
+function build(el) {
+  const v = el.dataset.variant;
+  const timeLayout = v === "d" ? "seg" : v === "b" ? "c2" : "tiles";
+  const earLayout = v === "d" ? "seg" : "tiles";
+  const durLayout = v === "c" ? "tiles" : "c2";
+  el.innerHTML = `
+    <div class="page-title">記錄一次耳鳴</div>
+    <p class="page-sub">把當下的感受留下來，稍後也能回頭看。</p>
+    <div class="card">
+      <div class="section">
+        <div class="section-heading-wrap"><div class="section-heading">這次的聲音</div></div>
+        ${single(v, "time", timeLayout)}
+        ${single(v, "ear", earLayout)}
+        ${intensity(v)}
+        ${single(v, "sound", "tiles")}
+        ${single(v, "dur", durLayout)}
+      </div>
+      <div class="section">
+        <div class="section-heading-wrap"><div class="section-heading">當下的你 <span class="tag">可略過</span></div></div>
+        <fieldset><legend>當下狀態 <span class="tag">可複選</span></legend><div class="wrap multi">${options(v, "state", groups.state, "checkbox")}</div></fieldset>
+      </div>
+      <button class="submit" type="button">保存這次紀錄</button>
+    </div>`;
+}
+
+function syncThumb(seg) {
+  const thumb = seg.querySelector(".thumb");
+  const labels = [...seg.querySelectorAll(".opt")];
+  const i = labels.findIndex(l => l.querySelector("input").checked);
+  const w = (seg.clientWidth - 6) / labels.length;
+  thumb.style.width = w + "px";
+  thumb.style.transform = `translateX(${i * w}px)`;
+}
+
+document.querySelectorAll(".inner").forEach(el => {
+  build(el);
+  el.querySelectorAll(".seg").forEach(seg => {
+    syncThumb(seg);
+    seg.addEventListener("change", () => syncThumb(seg));
+  });
+  el.querySelector(".scale").addEventListener("change", e => {
+    const n = +e.target.value;
+    el.querySelectorAll(".scale .opt").forEach(l => l.classList.toggle("f", +l.dataset.l <= n));
+  });
+});
+addEventListener("resize", () => document.querySelectorAll(".seg").forEach(syncThumb));
+</script>
+</body>
+</html>
