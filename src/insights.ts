@@ -68,6 +68,54 @@ export interface IntensityPoint {
   max: number;
 }
 
+export interface PlotPoint {
+  x: number;
+  y: number;
+}
+
+// Intensity is always on a fixed 1–5 scale; 5 sits at the top.
+export function plotIntensity(
+  points: (IntensityPoint | null)[],
+  width: number,
+  height: number,
+  pad: number,
+): (PlotPoint | null)[] {
+  const step = points.length > 1 ? (width - pad * 2) / (points.length - 1) : 0;
+  return points.map((point, index) =>
+    point
+      ? {
+          x: points.length > 1 ? pad + index * step : width / 2,
+          y: pad + ((5 - point.average) / 4) * (height - pad * 2),
+        }
+      : null,
+  );
+}
+
+export function splitSegments(points: (PlotPoint | null)[]): PlotPoint[][] {
+  const segments: PlotPoint[][] = [];
+  let current: PlotPoint[] = [];
+  for (const point of points) {
+    if (point) current.push(point);
+    else if (current.length) {
+      segments.push(current);
+      current = [];
+    }
+  }
+  if (current.length) segments.push(current);
+  return segments;
+}
+
+export function smoothPath(points: PlotPoint[]): string {
+  let path = `M${points[0].x} ${points[0].y}`;
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1];
+    const b = points[i];
+    const mid = (a.x + b.x) / 2;
+    path += ` C${mid} ${a.y} ${mid} ${b.y} ${b.x} ${b.y}`;
+  }
+  return path;
+}
+
 export interface InsightSummary {
   range: InsightRange;
   start: string;

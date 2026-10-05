@@ -3,7 +3,10 @@ import type { DailyArtwork, TinnitusEvent } from "./domain";
 import {
   describeTiming,
   parseInsightRange,
+  plotIntensity,
   shiftDate,
+  smoothPath,
+  splitSegments,
   summarizeRange,
   timeSlotOf,
   weekdayIndex,
@@ -205,5 +208,41 @@ describe("describeTiming", () => {
 
   it("is empty without events", () => {
     expect(describeTiming(empty())).toBe("");
+  });
+});
+
+describe("intensity plot", () => {
+  const point = (average: number) => ({
+    start: "",
+    end: "",
+    average,
+    min: average,
+    max: average,
+  });
+
+  it("maps 1–5 onto the height and spreads points across the width", () => {
+    expect(plotIntensity([point(5), null, point(1)], 100, 50, 10)).toEqual([
+      { x: 10, y: 10 },
+      null,
+      { x: 90, y: 40 },
+    ]);
+  });
+
+  it("centres a single point", () => {
+    expect(plotIntensity([point(3)], 100, 50, 10)).toEqual([{ x: 50, y: 25 }]);
+  });
+
+  it("breaks the line where a day has no records", () => {
+    const a = { x: 0, y: 0 };
+    const b = { x: 1, y: 1 };
+    const c = { x: 2, y: 2 };
+    expect(splitSegments([a, null, b, c, null])).toEqual([[a], [b, c]]);
+  });
+
+  it("draws a horizontal-tangent cubic between points", () => {
+    expect(smoothPath([{ x: 0, y: 0 }, { x: 10, y: 10 }])).toBe(
+      "M0 0 C5 0 5 10 10 10",
+    );
+    expect(smoothPath([{ x: 3, y: 4 }])).toBe("M3 4");
   });
 });
