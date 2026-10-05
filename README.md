@@ -20,6 +20,8 @@ npm run dev
 
 Vite 預設在 `http://localhost:5173`，將 `/api` 轉送到本機 Vercel 函式。`APP_ORIGIN` 應設為 `http://localhost:5173`，GitHub OAuth callback 也需對應。正式部署時設定相同環境變數，將 `APP_ORIGIN` 換成正式 HTTPS 網域。
 
+在 `npm run dev` 下，入口頁有「跳過登入（開發）」，可不經 GitHub 登入測試各頁面；正式建置中不存在此按鈕。
+
 ```sh
 npm run build
 npm test

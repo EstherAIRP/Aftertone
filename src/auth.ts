@@ -31,6 +31,8 @@ export const useAuthStore = defineStore("auth", {
     offline: false,
     login: "",
     error: "",
+    /** Signed in via the dev-only skip; never true in production builds. */
+    devSkipped: false,
   }),
   actions: {
     async check() {
@@ -63,6 +65,12 @@ export const useAuthStore = defineStore("auth", {
       }
     },
     async logout() {
+      if (import.meta.env.DEV && this.devSkipped) {
+        // No session cookie exists and `npm run dev` may have no /api to call.
+        this.devSkipped = false;
+        this.authenticated = false;
+        return;
+      }
       try {
         await fetch("/api/auth/logout", {
           method: "POST",
@@ -75,5 +83,18 @@ export const useAuthStore = defineStore("auth", {
         this.login = "";
       }
     },
+    // Dev-only local sign-in for testing pages without GitHub OAuth. It only
+    // flips client-side UI state; the API never sees it. The DEV-guarded
+    // spread lets Vite drop the whole action, name included, from builds.
+    ...(import.meta.env.DEV
+      ? {
+          skipLoginForDev() {
+            if (!import.meta.env.DEV) return;
+            this.devSkipped = true;
+            this.authenticated = true;
+            this.error = "";
+          },
+        }
+      : {}),
   },
 });

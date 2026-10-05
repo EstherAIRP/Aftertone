@@ -2,6 +2,10 @@
 import { useAuthStore } from "../auth";
 
 const auth = useAuthStore();
+// Compile-time constant: false in production, so the skip button is dropped.
+// The `!!` makes Vue bind it as a plain const (not unref()), which lets the
+// bundler fold the v-if and strip the button from production builds.
+const devSkip = !!import.meta.env.DEV;
 const chars = (text: string) => [...text];
 </script>
 
@@ -37,6 +41,7 @@ const chars = (text: string) => [...text];
         用 GitHub 登入
       </a>
       <p v-if="auth.error" class="welcome-error" role="alert">{{ auth.error }}</p>
+      <button v-if="devSkip" class="welcome-dev-skip" type="button" @click="auth.skipLoginForDev?.()">跳過登入（開發）</button>
     </div>
   </main>
 </template>

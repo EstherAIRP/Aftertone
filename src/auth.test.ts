@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
-import { consumeAuthError } from "./auth";
+import { createPinia, setActivePinia } from "pinia";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { consumeAuthError, useAuthStore } from "./auth";
 
 describe("consumeAuthError", () => {
   it("leaves the URL alone when there is no auth_error", () => {
@@ -29,5 +30,28 @@ describe("consumeAuthError", () => {
     expect(consumeAuthError("https://a.example/?auth_error=weird").message).toBe(
       "登入失敗，請重試。",
     );
+  });
+});
+
+describe("dev login skip", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("signs in locally and logs out without calling the API", async () => {
+    setActivePinia(createPinia());
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+    const auth = useAuthStore();
+    auth.error = "目前無法驗證登入。請確認網路或稍後重試。";
+
+    expect(auth.skipLoginForDev).toBeTypeOf("function");
+    auth.skipLoginForDev!();
+    expect(auth.authenticated).toBe(true);
+    expect(auth.devSkipped).toBe(true);
+    expect(auth.error).toBe("");
+
+    await auth.logout();
+    expect(auth.authenticated).toBe(false);
+    expect(auth.devSkipped).toBe(false);
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 });
