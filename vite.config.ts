@@ -2,6 +2,9 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { VitePWA } from "vite-plugin-pwa";
 
+// The preview tool assigns a free port through PORT; the project has no Node typings.
+declare const process: { env: Record<string, string | undefined> };
+
 export default defineConfig({
   plugins: [
     vue(),
