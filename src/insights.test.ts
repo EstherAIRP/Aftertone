@@ -220,6 +220,10 @@ describe("intensity plot", () => {
     max: average,
   });
 
+  it("returns an empty path for no points", () => {
+    expect(smoothPath([])).toBe("");
+  });
+
   it("maps 1–5 onto the height and spreads points across the width", () => {
     expect(plotIntensity([point(5), null, point(1)], 100, 50, 10)).toEqual([
       { x: 10, y: 10 },

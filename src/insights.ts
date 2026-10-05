@@ -106,6 +106,7 @@ export function splitSegments(points: (PlotPoint | null)[]): PlotPoint[][] {
 }
 
 export function smoothPath(points: PlotPoint[]): string {
+  if (!points.length) return "";
   let path = `M${points[0].x} ${points[0].y}`;
   for (let i = 1; i < points.length; i++) {
     const a = points[i - 1];
