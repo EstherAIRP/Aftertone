@@ -76,36 +76,25 @@ const soundLabel = computed(() =>
   </div>
   <div class="voice-divider" aria-hidden="true"></div>
   <div class="ear-ripples">
-    <svg
-      class="ear-ripple ear-ripple--left"
-      viewBox="0 0 70 70"
-      aria-hidden="true"
-    >
-      <path
-        v-for="i in arcs"
-        :key="i"
-        :d="`M${20 + i * 14} ${12 - i * 2} Q${36 + i * 18} 35 ${20 + i * 14} ${58 + i * 2}`"
-        :opacity="i < litArcs('left') ? 0.85 - i * 0.2 : 0.15"
-      />
-      <circle cx="12" cy="35" r="5" />
-    </svg>
-    <p class="ear-shares">
-      <span>左 {{ percent(ears.left) }}%</span>
-      <span>{{ EAR_LABELS.both }} {{ percent(ears.both) }}%</span>
-      <span>右 {{ percent(ears.right) }}%</span>
-    </p>
-    <svg
-      class="ear-ripple ear-ripple--right"
-      viewBox="0 0 70 70"
-      aria-hidden="true"
-    >
-      <path
-        v-for="i in arcs"
-        :key="i"
-        :d="`M${20 + i * 14} ${12 - i * 2} Q${36 + i * 18} 35 ${20 + i * 14} ${58 + i * 2}`"
-        :opacity="i < litArcs('right') ? 0.85 - i * 0.2 : 0.15"
-      />
-      <circle cx="12" cy="35" r="5" />
-    </svg>
+    <template v-for="side in (['left', 'right'] as const)" :key="side">
+      <svg
+        :class="`ear-ripple ear-ripple--${side}`"
+        viewBox="0 0 70 70"
+        aria-hidden="true"
+      >
+        <path
+          v-for="i in arcs"
+          :key="i"
+          :d="`M${20 + i * 14} ${12 - i * 2} Q${36 + i * 18} 35 ${20 + i * 14} ${58 + i * 2}`"
+          :opacity="i < litArcs(side) ? 0.85 - i * 0.2 : 0.15"
+        />
+        <circle cx="12" cy="35" r="5" />
+      </svg>
+      <p v-if="side === 'left'" class="ear-shares">
+        <span>左 {{ percent(ears.left) }}%</span>
+        <span>{{ EAR_LABELS.both }} {{ percent(ears.both) }}%</span>
+        <span>右 {{ percent(ears.right) }}%</span>
+      </p>
+    </template>
   </div>
 </template>
