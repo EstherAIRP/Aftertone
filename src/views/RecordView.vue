@@ -4,6 +4,14 @@ import { RouterLink } from "vue-router";
 import PromptReveal from "../components/PromptReveal.vue";
 import { addEvent } from "../db";
 import {
+  DURATION_LABELS,
+  DURATION_LEVELS,
+  EAR_LABELS,
+  EAR_SIDES,
+  SOUND_LABELS,
+  SOUND_TYPES,
+  STATUS_LABELS,
+  STATUS_TAGS,
   combineDateTime,
   formatOccurredDay,
   formatOccurredTime,
@@ -65,36 +73,16 @@ const note = ref("");
 const saving = ref(false);
 const error = ref("");
 const result = ref<Awaited<ReturnType<typeof addEvent>> | null>(null);
-const earSides: { value: EarSide; label: string }[] = [
-  { value: "left", label: "左耳" },
-  { value: "right", label: "右耳" },
-  { value: "both", label: "雙耳" },
-];
-const soundTypes: { value: SoundType; label: string }[] = [
-  { value: "high_pitch", label: "高頻" },
-  { value: "low_pitch", label: "低頻" },
-  { value: "hum", label: "嗡聲" },
-  { value: "sharp", label: "尖銳" },
-  { value: "pulsing", label: "脈動感" },
-  { value: "other", label: "其他" },
-];
-const durations: { value: DurationLevel; label: string }[] = [
-  { value: "brief", label: "短暫" },
-  { value: "under_30s", label: "30 秒內" },
-  { value: "under_1m", label: "1 分鐘內" },
-  { value: "one_to_three", label: "1～3 分鐘" },
-  { value: "over_3m", label: "3 分鐘以上" },
-];
-const tags: { value: StatusTag; label: string }[] = [
-  { value: "stress", label: "壓力高" },
-  { value: "fatigue", label: "疲勞" },
-  { value: "poor_sleep", label: "睡眠不足" },
-  { value: "quiet", label: "安靜環境" },
-  { value: "headphones", label: "使用耳機後" },
-  { value: "after_work", label: "工作後" },
-  { value: "before_bed", label: "睡前" },
-  { value: "other", label: "其他" },
-];
+const earSides = EAR_SIDES.map((value) => ({ value, label: EAR_LABELS[value] }));
+const soundTypes = SOUND_TYPES.map((value) => ({
+  value,
+  label: SOUND_LABELS[value],
+}));
+const durations = DURATION_LEVELS.map((value) => ({
+  value,
+  label: DURATION_LABELS[value],
+}));
+const tags = STATUS_TAGS.map((value) => ({ value, label: STATUS_LABELS[value] }));
 async function submit() {
   if (saving.value) return;
   saving.value = true;

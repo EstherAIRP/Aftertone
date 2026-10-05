@@ -3,6 +3,14 @@ import { reactive } from "vue";
 import {
   CORE_CATEGORIES,
   DETAIL_CATEGORIES,
+  DURATION_LABELS,
+  DURATION_LEVELS,
+  EAR_LABELS,
+  EAR_SIDES,
+  SOUND_LABELS,
+  SOUND_TYPES,
+  STATUS_LABELS,
+  STATUS_TAGS,
   buildMonthGrid,
   combineDateTime,
   composePrompt,
@@ -364,5 +372,40 @@ describe("occurred-at field", () => {
     expect(combineDateTime("2026-10-05", "08:43", now)).toBe(
       "2026-10-05T08:43",
     );
+  });
+});
+
+describe("record option labels", () => {
+  it("keeps the record form's order and wording", () => {
+    expect(EAR_SIDES.map((side) => EAR_LABELS[side])).toEqual([
+      "左耳",
+      "右耳",
+      "雙耳",
+    ]);
+    expect(SOUND_TYPES.map((type) => SOUND_LABELS[type])).toEqual([
+      "高頻",
+      "低頻",
+      "嗡聲",
+      "尖銳",
+      "脈動感",
+      "其他",
+    ]);
+    expect(DURATION_LEVELS.map((level) => DURATION_LABELS[level])).toEqual([
+      "短暫",
+      "30 秒內",
+      "1 分鐘內",
+      "1～3 分鐘",
+      "3 分鐘以上",
+    ]);
+    expect(STATUS_TAGS.map((tag) => STATUS_LABELS[tag])).toEqual([
+      "壓力高",
+      "疲勞",
+      "睡眠不足",
+      "安靜環境",
+      "使用耳機後",
+      "工作後",
+      "睡前",
+      "其他",
+    ]);
   });
 });

@@ -118,6 +118,42 @@ export function createEvent(
   };
 }
 
+// Record-form options. Array order is display order on every page.
+export const EAR_LABELS: Record<EarSide, string> = {
+  left: "左耳",
+  right: "右耳",
+  both: "雙耳",
+};
+export const EAR_SIDES = Object.keys(EAR_LABELS) as EarSide[];
+export const SOUND_LABELS: Record<SoundType, string> = {
+  high_pitch: "高頻",
+  low_pitch: "低頻",
+  hum: "嗡聲",
+  sharp: "尖銳",
+  pulsing: "脈動感",
+  other: "其他",
+};
+export const SOUND_TYPES = Object.keys(SOUND_LABELS) as SoundType[];
+export const DURATION_LABELS: Record<DurationLevel, string> = {
+  brief: "短暫",
+  under_30s: "30 秒內",
+  under_1m: "1 分鐘內",
+  one_to_three: "1～3 分鐘",
+  over_3m: "3 分鐘以上",
+};
+export const DURATION_LEVELS = Object.keys(DURATION_LABELS) as DurationLevel[];
+export const STATUS_LABELS: Record<StatusTag, string> = {
+  stress: "壓力高",
+  fatigue: "疲勞",
+  poor_sleep: "睡眠不足",
+  quiet: "安靜環境",
+  headphones: "使用耳機後",
+  after_work: "工作後",
+  before_bed: "睡前",
+  other: "其他",
+};
+export const STATUS_TAGS = Object.keys(STATUS_LABELS) as StatusTag[];
+
 export const CATEGORY_LABELS: Record<Category, string> = {
   person: "人物",
   clothing: "服裝",
