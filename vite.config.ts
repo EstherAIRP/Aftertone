@@ -28,6 +28,8 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: "/index.html",
+        // OAuth navigation must reach the server, including login and callback.
+        navigateFallbackDenylist: [/^\/api(?:\/|\?|$)/],
         globPatterns: ["**/*.{js,css,html,svg,png,webp}"],
       },
     }),
