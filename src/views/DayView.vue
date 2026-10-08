@@ -136,7 +136,6 @@ async function complete() {
     <RouterLink v-if="archiveBack" class="back-link" :to="archiveBack"
       >‹ 收藏</RouterLink
     >
-    <RouterLink v-else class="back-link" to="/">← 回首頁</RouterLink>
     <ArtworkImagePanel
       v-if="!loading && artwork?.imagePath"
       ref="imagePanel"
