@@ -30,6 +30,9 @@ export default defineConfig({
         navigateFallback: "/index.html",
         // OAuth navigation must reach the server, including login and callback.
         navigateFallbackDenylist: [/^\/api(?:\/|\?|$)/],
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
         globPatterns: ["**/*.{js,css,html,svg,png,webp}"],
       },
     }),
