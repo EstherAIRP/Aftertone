@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { RouterLink } from "vue-router";
 import PromptReveal from "../components/PromptReveal.vue";
 import { addEvent } from "../db";
 import {
@@ -111,7 +110,6 @@ async function submit() {
 
 <template>
   <main class="page narrow-page">
-    <RouterLink class="back-link" to="/">← 回首頁</RouterLink>
     <PromptReveal
       v-if="result"
       :fragment="result.fragment"
