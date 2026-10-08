@@ -16,7 +16,10 @@ export default defineConfig({
         description: "私人耳鳴與意象日誌",
         theme_color: "#F5F8FC",
         background_color: "#F5F8FC",
-        display: "standalone",
+        display: "fullscreen",
+        display_override: ["fullscreen", "standalone"],
+        start_url: "/",
+        scope: "/",
         icons: [
           {
             src: "/icon.svg",
