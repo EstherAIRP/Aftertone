@@ -109,8 +109,15 @@
 * {
   box-sizing: border-box;
 }
+html,
+body,
+#app {
+  min-height: 100%;
+}
 body {
   margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(
     155deg,
     var(--bg),
@@ -162,6 +169,7 @@ p {
 .app-shell {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   padding-bottom: calc(98px + env(safe-area-inset-bottom));
 }
@@ -190,7 +198,7 @@ p {
   min-height: 112px;
   max-width: 1160px;
   margin: auto;
-  padding: 24px 24px 0;
+  padding: calc(24px + env(safe-area-inset-top)) 24px 0;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -225,7 +233,7 @@ p {
 
 .text-button {
   position: absolute;
-  top: 24px;
+  top: calc(24px + env(safe-area-inset-top));
   right: 24px;
   min-height: 44px;
   padding: 0 12px;
@@ -2092,7 +2100,11 @@ legend {
   overflow: hidden;
   display: grid;
   place-items: center;
-  padding: 48px 24px calc(56px + env(safe-area-inset-bottom));
+  padding:
+    calc(48px + env(safe-area-inset-top))
+    calc(24px + env(safe-area-inset-right))
+    calc(56px + env(safe-area-inset-bottom))
+    calc(24px + env(safe-area-inset-left));
   text-align: center;
 }
 .welcome-light {
@@ -2542,7 +2554,11 @@ legend {
   .site-header {
     height: auto;
     min-height: 143px;
-    padding: 24px 18px 8px;
+    padding:
+      calc(24px + env(safe-area-inset-top))
+      calc(18px + env(safe-area-inset-right))
+      8px
+      calc(18px + env(safe-area-inset-left));
   }
   .brand {
     font-size: var(--text-md);
@@ -2551,8 +2567,8 @@ legend {
     font-size: var(--text-display);
   }
   .text-button {
-    top: 94px;
-    right: 16px;
+    top: calc(94px + env(safe-area-inset-top));
+    right: calc(16px + env(safe-area-inset-right));
     padding: 5px 9px;
     font-size: var(--text-xs);
   }
