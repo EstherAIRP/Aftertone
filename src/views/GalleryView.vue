@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { RouterLink, useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import ArchiveCalendar from "../components/ArchiveCalendar.vue";
 import ArchiveMasonry from "../components/ArchiveMasonry.vue";
 import { getArchive } from "../db";
@@ -107,7 +107,6 @@ function replaceArtwork(artwork: DailyArtwork) {
         <p class="muted">
           日期結束後，可以整理 Prompt，將那一天的意象留在這裡。
         </p>
-        <RouterLink class="button secondary" to="/">回到首頁</RouterLink>
       </div>
     </template>
   </main>
