@@ -135,11 +135,11 @@ export const SOUND_LABELS: Record<SoundType, string> = {
 };
 export const SOUND_TYPES = Object.keys(SOUND_LABELS) as SoundType[];
 export const DURATION_LABELS: Record<DurationLevel, string> = {
-  brief: "短暫",
-  under_30s: "30 秒內",
-  under_1m: "1 分鐘內",
-  one_to_three: "1～3 分鐘",
-  over_3m: "3 分鐘以上",
+  brief: "3分鐘",
+  under_30s: "10分鐘",
+  under_1m: "30分鐘",
+  one_to_three: "1小時",
+  over_3m: "1小時以上",
 };
 export const DURATION_LEVELS = Object.keys(DURATION_LABELS) as DurationLevel[];
 export const STATUS_LABELS: Record<StatusTag, string> = {
