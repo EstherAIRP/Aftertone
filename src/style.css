@@ -269,11 +269,12 @@ p {
   line-height: var(--leading-body);
 }
 .card {
-  border: 1px solid rgba(153, 177, 205, 0.58);
+  border: 1px solid var(--glass-border);
   border-radius: 26px;
-  background: rgba(255, 255, 255, 0.75);
-  box-shadow: 0 14px 48px rgba(69, 90, 120, 0.07);
-  backdrop-filter: blur(18px);
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
 }
 .button {
   min-height: 48px;
@@ -395,7 +396,7 @@ p {
 }
 .info-card {
   padding: 28px;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--glass-bg-strong);
 }
 
 .back-link {
@@ -1352,7 +1353,7 @@ legend {
 .result-card {
   margin: 25px 0;
   padding: 28px;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--glass-bg-strong);
 }
 .actions {
   display: flex;
@@ -1578,7 +1579,7 @@ legend {
 .prompt-section {
   margin-top: 18px;
   padding: 28px;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--glass-bg-strong);
 }
 .prompt-grid {
   display: grid;
@@ -1601,9 +1602,12 @@ legend {
 .next-steps {
   margin-top: 26px;
   padding: 22px;
-  border: 1px solid rgba(143, 168, 200, 0.6);
+  border: 1px solid var(--glass-border);
   border-radius: 18px;
-  background: #f0f5fb;
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   scroll-margin-top: 16px;
 }
 .next-steps h3 {
@@ -2009,11 +2013,13 @@ legend {
   z-index: 2;
   min-width: 150px;
   padding: 6px;
-  border: 1px solid rgba(153, 177, 205, 0.58);
+  border: 1px solid var(--glass-border);
   border-radius: 14px;
   display: grid;
-  background: #fff;
-  box-shadow: 0 10px 30px rgba(52, 68, 93, 0.16);
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
 }
 .artwork-menu-items a,
 .artwork-menu-items button {
@@ -2327,9 +2333,12 @@ legend {
 .insights-section {
   margin-bottom: 16px;
   padding: 20px 18px 18px;
+  border: 1px solid var(--glass-border);
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.62);
-  box-shadow: 0 10px 30px -18px rgba(71, 100, 138, 0.35);
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   text-align: start;
   animation: insights-fade 0.24s ease both;
 }
@@ -2519,9 +2528,12 @@ legend {
   flex: 1;
   min-height: 44px;
   padding: 16px;
+  border: 1px solid var(--glass-border);
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.62);
-  box-shadow: 0 10px 30px -18px rgba(71, 100, 138, 0.35);
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   color: var(--text-2);
   font-size: var(--text-xs);
 }
