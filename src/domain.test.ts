@@ -391,11 +391,11 @@ describe("record option labels", () => {
       "其他",
     ]);
     expect(DURATION_LEVELS.map((level) => DURATION_LABELS[level])).toEqual([
-      "短暫",
-      "30 秒內",
-      "1 分鐘內",
-      "1～3 分鐘",
-      "3 分鐘以上",
+      "3分鐘",
+      "10分鐘",
+      "30分鐘",
+      "1小時",
+      "1小時以上",
     ]);
     expect(STATUS_TAGS.map((tag) => STATUS_LABELS[tag])).toEqual([
       "壓力高",
